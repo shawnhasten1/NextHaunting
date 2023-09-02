@@ -25,3 +25,76 @@ body {
     )
     rgb(var(--background-start-rgb));
 }
+.debug{
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  color: white;
+}
+.row{
+  max-height: 200px;
+  display: flex;
+}
+.tile {
+  width: 200px; /* Adjust the width as needed */
+  height: 200px; /* Adjust the height as needed */
+  max-width: 200px; /* Adjust the width as needed */
+  max-height: 200px; /* Adjust the height as needed */
+  margin: 0;
+  padding: 0;
+  border: 1px solid #000; /* Optional: Add borders for visualization */
+  display: inline-block;
+  position: relative;
+}
+
+.tile img {
+  width: 200px; /* Adjust the width as needed */
+  height: 200px; /* Adjust the height as needed */
+  max-width: 200px; /* Adjust the width as needed */
+  max-height: 200px; /* Adjust the height as needed */
+  display: block;
+  border: 2px white solid;
+  border-style: inset;
+
+  /* Ignore click and touch events */
+  pointer-events: none;
+
+  /* No hightlighting */
+  -webkit-touch-callout: none; /* iOS Safari */
+  -webkit-user-select: none; /* Safari */
+  -khtml-user-select: none; /* Konqueror HTML */
+  -moz-user-select: none; /* Old versions of Firefox */
+  -ms-user-select: none; /* Internet Explorer/Edge */
+  user-select: none; /* Non-prefixed version, currently supported by Chrome, Edge, Opera and Firefox */
+}
+
+.movement-buttons{
+  position: absolute;
+  bottom: 0px;
+  right: 0px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  width: 100%;
+  padding: 5px;
+  padding-top:2rem;
+  padding-bottom:2rem;
+  background-color: #2d3748;
+  height: 138px;
+  max-height: 138px;
+}
+
+.move-button{
+  padding: 1.25rem;
+  border-radius: 0.25rem;
+  background-color: #4a5568;
+  color: white;
+  border: 1px solid #4a5568;
+  box-shadow: 0 0 5px 1px rgba(0, 0, 0, 0.05);
+  margin: 0.25rem;
+}
+
+.move-button:hover{
+  background-color: #2d3748;
+  border: 1px solid #2d3748;
+}
