@@ -4,640 +4,33 @@ import React, { useState, useEffect } from 'react';
 import Tile from './Tile';
 import Player from './Player';
 import MovementButtons from './MovementButtons';
+import {basementTiles, groundTiles, upperTiles} from '@/public/tiles';
 
-function GameBoard() {
+function GameBoard() {  // Define constants for floors
+  const FLOORS = {
+    BASEMENT: 'Basement',
+    GROUND: 'Ground',
+    UPPER: 'Upper',
+  };
+
+  const [currentFloor, setCurrentFloor] = useState(FLOORS.GROUND); // Initial floor
   const [isDragging, setIsDragging] = useState(false);
   const [startPosition, setStartPosition] = useState({ x: -1600, y: -1900 });
   const [transform, setTransform] = useState({ x: -1600, y: -1900 });
-  const [playerPosition, setPlayerPosition] = useState({ row: 12, col: 11 }); // Initial position
-  const [tiles, setTiles] = useState(generateInitialTiles());
+  const [playerPosition, setPlayerPosition] = useState({ row: 12, col: 11, floor: FLOORS.GROUND }); // Initial position
+  const [tiles, setTiles] = useState({
+    [FLOORS.BASEMENT]: generateInitialTiles(),
+    [FLOORS.GROUND]: generateInitialTiles(),
+    [FLOORS.UPPER]: generateInitialTiles(),
+  });
   // Define the list of available tiles as a state variable
-  const [availableTiles, setAvailableTiles] = useState([
-    {
-        directions: [
-            "right", 
-            "down"
-        ], 
-        "floor": [
-            "upper",
-            "basement"
-        ], 
-        imageSrc: "/images/tiles/tile_21.gif", 
-        name: "Gymnasium", 
-        "special":{}
-    },
-    {
-        directions: [
-            "left", 
-            "up", 
-            "right", 
-            "down"
-        ], 
-        "floor": [
-            "upper",
-            "ground"
-        ], 
-        imageSrc: "/images/tiles/tile_37.gif", 
-        name: "Collapsed Room", 
-        "special":{}
-    },
-    {
-        directions: [ 
-            "up"
-        ], 
-        "floor": [
-            "ground"
-        ], 
-        imageSrc: "/images/tiles/tile_42.gif", 
-        name: "Coal Chute", 
-        "special":{
-            "status":"move",
-            "tile":"tile_03.jpg"
-        }
-    },
-    {
-        directions: [ 
-            "right", 
-            "up"
-        ], 
-        "floor": [
-            "ground"
-        ], 
-        imageSrc: "/images/tiles/tile_43.gif", 
-        name: "Dining Room", 
-        "special":{}
-    },
-    {
-        directions: [ 
-            "down"
-        ], 
-        "floor": [
-            "upper"
-        ], 
-        imageSrc: "/images/tiles/tile_27.gif", 
-        name: "Attic", 
-        "special":{
-            "status":"end",
-            "effect":"might",
-            "mod":-1,
-            "challenge":"speed",
-            "challenge_mod":3
-        }
-    },
-    {
-        directions: [ 
-            "left", 
-            "up", 
-            "down"
-        ], 
-        "floor": [
-            "basement"
-        ], 
-        imageSrc: "/images/tiles/tile_58.gif", 
-        name: "Furnace Room", 
-        "special":{
-            "status":"end",
-            "effect":"health",
-            "mod":-1
-        }
-    },
-    {
-        directions: [ 
-            "left", 
-            "up", 
-            "right", 
-            "down"
-        ], 
-        "floor": [
-            "upper",
-            "ground",
-            "basement"
-        ], 
-        imageSrc: "/images/tiles/tile_06.gif", 
-        name: "Dusty Hallway", 
-        "special":{}
-    },
-    {
-        directions: [ 
-            "up", 
-            "right",
-        ], 
-        "floor": [
-            "upper"
-        ], 
-        imageSrc: "/images/tiles/tile_63.gif", 
-        name: "Underground Lake", 
-        "special":{}
-    },
-    {
-        directions: [ 
-            "up", 
-            "right",
-        ], 
-        "floor": [
-            "ground",
-            "basement"
-        ], 
-        imageSrc: "/images/tiles/tile_50.gif", 
-        name: "Kitchen", 
-        "special":{}
-    },
-    {
-        directions: [ 
-            "left", 
-            "up", 
-            "down"
-        ], 
-        "floor": [
-            "ground"
-        ], 
-        imageSrc: "/images/tiles/tile_46.gif", 
-        name: "Patio", 
-        "special":{}
-    },
-    {
-        directions: [ 
-            "left", 
-            "right"
-        ], 
-        "floor": [
-            "upper"
-        ], 
-        imageSrc: "/images/tiles/tile_29.gif", 
-        name: "Bedroom", 
-        "special":{}
-    },
-    {
-        directions: [ 
-            "left", 
-            "down"
-        ], 
-        "floor": [
-            "upper",
-            "ground"
-        ], 
-        imageSrc: "/images/tiles/tile_39.gif", 
-        name: "Library", 
-        "special":{
-            "status":"end",
-            "effect":"knowledge",
-            "mod":1
-        }
-    },
-    {
-        directions: [ 
-            "up"
-        ], 
-        "floor": [
-            "upper",
-            "basement"
-        ], 
-        imageSrc: "/images/tiles/tile_25.gif", 
-        name: "Storeroom", 
-        "special":{}
-    },
-    {
-        directions: [ 
-            "up",
-            "down"
-        ], 
-        "floor": [
-            "basement"
-        ], 
-        imageSrc: "/images/tiles/tile_59.gif", 
-        name: "Larder", 
-        "special":{
-            "status":"end",
-            "effect":"might",
-            "mod":1
-        }
-    },
-    {
-        directions: [ 
-            "left", 
-            "up", 
-            "right", 
-            "down"
-        ], 
-        "floor": [
-            "upper",
-            "ground",
-            "basement"
-        ], 
-        imageSrc: "/images/tiles/tile_08.gif", 
-        name: "Junk Room", 
-        "special":{
-            "status":"exit",
-            "effect":"speed",
-            "mod":-1,
-            "challenge":"might",
-            "challenge_mod":3
-        }
-    },
-    {
-        directions: [ 
-            "up",  
-            "down"
-        ], 
-        "floor": [
-            "upper"
-        ], 
-        imageSrc: "/images/tiles/tile_28.gif", 
-        name: "Balcony", 
-        "special":{}
-    },
-    {
-        directions: [ 
-            "right"
-        ], 
-        "floor": [
-            "basement"
-        ], 
-        imageSrc: "/images/tiles/tile_60.gif", 
-        name: "Pentagram Room", 
-        "special":{
-            "status":"exit",
-            "effect":"sanity",
-            "mod":-1,
-            "challenge":"knowledge",
-            "challenge_mod":4
-        }
-    },
-    {
-        directions: [ 
-            "up", 
-            "down"
-        ], 
-        "floor": [
-            "ground"
-        ], 
-        imageSrc: "/images/tiles/tile_44.gif", 
-        name: "Gardens", 
-        "special":{}
-    },
-    {
-        directions: [ 
-            "left", 
-            "up", 
-            "right", 
-            "down"
-        ], 
-        "floor": [
-            "ground"
-        ], 
-        imageSrc: "/images/tiles/tile_41.gif", 
-        name: "Ballroom", 
-        "special":{}
-    },
-    {
-        directions: [ 
-            "left", 
-            "up", 
-            "right", 
-            "down"
-        ], 
-        "floor": [
-            "upper",
-            "ground"
-        ], 
-        imageSrc: "/images/tiles/tile_36.gif", 
-        name: "Charred Room", 
-        "special":{}
-    },
-    {
-        directions: [ 
-            "right", 
-            "down"
-        ], 
-        "floor": [
-            "upper",
-            "basement"
-        ], 
-        imageSrc: "/images/tiles/tile_22.gif", 
-        name: "Operating Laboratory", 
-        "special":{}
-    },
-    {
-        directions: [
-            "up"
-        ], 
-        "floor": [
-            "upper",
-            "ground"
-        ], 
-        imageSrc: "/images/tiles/tile_35.gif", 
-        name: "Chapel", 
-        "special":{
-            "status":"end",
-            "effect":"sanity",
-            "mod":1
-        }
-    },
-    {
-        directions: [ 
-            "left", 
-            "up", 
-            "right", 
-            "down"
-        ], 
-        "floor": [
-            "upper",
-            "basement"
-        ], 
-        imageSrc: "/images/tiles/tile_24.gif", 
-        name: "Servants Quarters", 
-        "special":{}
-    },
-    {
-        directions: [ 
-            "left", 
-            "up"
-        ], 
-        "floor": [
-            "upper"
-        ], 
-        imageSrc: "/images/tiles/tile_31.gif", 
-        name: "Junk Room", 
-        "special":{}
-    },
-    {
-        directions: [
-            "up"
-        ], 
-        "floor": [
-            "upper",
-            "basement"
-        ], 
-        imageSrc: "/images/tiles/tile_26.gif", 
-        name: "Junk Room", 
-        "special":{
-            "status":"challenge",
-            "effect":"item",
-            "mod":2,
-            "challenge":"knowledge",
-            "challenge_mod":6
-        }
-    },
-    {
-        directions: [ 
-            "up"
-        ], 
-        "floor": [
-            "upper",
-            "ground",
-            "basement"
-        ], 
-        imageSrc: "/images/tiles/tile_09.gif", 
-        name: "Mystic Elevator", 
-        "special":{
-            "status":"move",
-            "effect":"elevator"
-        }
-    },
-    {
-        directions: [ 
-            "up", 
-            "down"
-        ], 
-        "floor": [
-            "upper"
-        ], 
-        imageSrc: "/images/tiles/tile_30.gif", 
-        name: "Gallery", 
-        "special":{
-            "status":"move_optional",
-            "tile":"tile_41.jpg",
-            "effect":"physical",
-            "mod":-1
-        }
-    },
-    {
-        directions: [ 
-          "up", 
-          "down"
-        ], 
-        "floor": [
-            "basement"
-        ], 
-        imageSrc: "/images/tiles/tile_61.gif", 
-        name: "Stairs From Basement", 
-        "special":{
-            "status":"move",
-            "tile":"foyer.jpg"
-        }
-    },
-    {
-        directions: [ 
-            "up"
-        ], 
-        "floor": [
-            "upper",
-            "ground"
-        ], 
-        imageSrc: "/images/tiles/tile_38.gif", 
-        name: "Consevatory", 
-        "special":{}
-    },
-    {
-        directions: [ 
-            "left", 
-            "up", 
-            "right", 
-            "down"
-        ], 
-        "floor": [
-            "ground",
-            "basement"
-        ], 
-        imageSrc: "/images/tiles/tile_48.gif", 
-        name: "Abandoned Room", 
-        "special":{}
-    },
-    {
-        directions: [ 
-            "left", 
-            "right"
-        ], 
-        "floor": [
-            "upper"
-        ], 
-        imageSrc: "/images/tiles/tile_32.gif", 
-        name: "Tower", 
-        "special":{
-            "status":"challenge",
-            "effect":"move",
-            "challenge":"might",
-            "challenge_mod":3
-        }
-    },
-    {
-        directions: [ 
-            "up", 
-            "down"
-        ], 
-        "floor": [
-            "basement"
-        ], 
-        imageSrc: "/images/tiles/tile_53.gif", 
-        name: "Catacombs", 
-        "special":{
-            "status":"challenge",
-            "effect":"move",
-            "challenge":"sanity",
-            "challenge_mod":6
-        }
-    },
-    {
-        directions: [ 
-            "left", 
-            "up", 
-            "right", 
-            "down"
-        ], 
-        "floor": [
-            "upper",
-            "ground",
-            "basement"
-        ], 
-        imageSrc: "/images/tiles/tile_05.gif", 
-        name: "Creaky Hallway", 
-        "special":{}
-    },
-    {
-        directions: [ 
-            "up", 
-            "down"
-        ], 
-        "floor": [
-            "upper",
-            "ground",
-            "basement"
-        ], 
-        imageSrc: "/images/tiles/tile_11.gif", 
-        name: "Statuary Corridor", 
-        "special":{}
-    },
-    {
-        directions: [ 
-            "up", 
-            "right", 
-            "down"
-        ], 
-        "floor": [
-            "upper",
-            "ground",
-            "basement"
-        ], 
-        imageSrc: "/images/tiles/tile_07.gif", 
-        name: "Game Room", 
-        "special":{}
-    },
-    {
-        directions: [ 
-            "left", 
-            "right"
-        ], 
-        "floor": [
-            "basement"
-        ], 
-        imageSrc: "/images/tiles/tile_55.gif", 
-        name: "Chasm", 
-        "special":{
-            "status":"challenge",
-            "effect":"move",
-            "challenge":"speed",
-            "challenge_mod":3
-        }
-    },
-    {
-        directions: [ 
-            "up", 
-            "down"
-        ], 
-        "floor": [
-            "basement"
-        ], 
-        imageSrc: "/images/tiles/tile_64.gif", 
-        name: "Wine Cellar", 
-        "special":{}
-    },
-    {
-        directions: [ 
-            "left",
-            "down"
-        ], 
-        "floor": [
-            "upper",
-            "ground",
-            "basement"
-        ], 
-        imageSrc: "/images/tiles/tile_10.gif", 
-        name: "Organ Room", 
-        "special":{}
-    },
-    {
-        directions: [
-            "up"
-        ], 
-        "floor": [
-            "basement"
-        ], 
-        imageSrc: "/images/tiles/tile_56.gif", 
-        name: "Crypt", 
-        "special":{
-            "status":"end",
-            "effect":"mental",
-            "mod":-1
-        }
-    },
-    {
-        directions: [ 
-            "left", 
-            "up", 
-            "right", 
-            "down"
-        ], 
-        "floor": [
-            "upper",
-            "ground"
-        ], 
-        imageSrc: "/images/tiles/tile_34.gif", 
-        name: "Bloody Room", 
-        "special":{}
-    },
-    {
-        directions: [
-            "down"
-        ], 
-        "floor": [
-            "ground"
-        ], 
-        imageSrc: "/images/tiles/tile_45.gif", 
-        name: "Graveyard", 
-        "special":{
-            "status":"exit",
-            "effect":"knowledge",
-            "mod":-1,
-            "challenge":"sanity",
-            "challenge_mod":4
-        }
-    },
-    {
-        directions: [ 
-            "up", 
-            "down"
-        ], 
-        "floor": [
-            "upper",
-            "basement"
-        ], 
-        imageSrc: "/images/tiles/tile_36.gif", 
-        name: "Research Laboratory", 
-        "special":{}
-    }
-  ]);
+  const [availableTiles, setAvailableTiles] = useState({
+    [FLOORS.BASEMENT]: basementTiles, // Replace with actual tiles
+    [FLOORS.GROUND]: groundTiles, // Replace with actual tiles
+    [FLOORS.UPPER]: upperTiles, // Replace with actual tiles
+  });
 
-  // Function to generate the initial tiles
+  // Function to generate the initial tiles for a specific floor
   function generateInitialTiles() {
     // Initialize the game board with blank tiles
     const numRows = 24;
@@ -645,43 +38,84 @@ function GameBoard() {
 
     return Array.from({ length: numRows }, (_, rowIndex) => {
       return Array.from({ length: numCols }, (_, colIndex) => {
-        if(colIndex === 11 && rowIndex >= 10 && rowIndex <= 12){
-          if(rowIndex === 10){
-            return {
-              floor: 'Ground Floor',
-              imageSrc: '/images/tiles/foyer-top.jpg',
-              name: 'Dungeon',
-              directions: ['down'],
-            };
+        if (colIndex === 11 && rowIndex >= 10 && rowIndex <= 12) {
+          // Create special tiles for transitioning between floors
+          if (currentFloor === FLOORS.GROUND) {
+            if (rowIndex === 10) {
+              return {
+                floor: FLOORS.GROUND,
+                imageSrc: '/images/tiles/foyer-top.jpg',
+                name: 'Stairs to Upper Floor',
+                directions: ['down'],
+                special: {
+                  transitionFloor: FLOORS.UPPER,
+                },
+              };
+            }
+            if (rowIndex === 11) {
+              return {
+                floor: FLOORS.GROUND,
+                imageSrc: '/images/tiles/foyer-mid.jpg',
+                name: 'Stairs to Upper Floor',
+                directions: [
+                  'up',
+                  'left',
+                  'right',
+                  'down',
+                ],
+                special: {
+                },
+              };
+            }
+            if (rowIndex === 12) {
+              return {
+                floor: FLOORS.GROUND,
+                imageSrc: '/images/tiles/foyer-bottom.jpg',
+                name: 'Stairs to Upper Floor',
+                directions: [
+                  'up',
+                  'left',
+                  'right',
+                  'down',
+                ],
+                special: {
+                },
+              };
+            }
+          } else if (currentFloor === FLOORS.UPPER) {
+            if (rowIndex === 12) {
+              return {
+                floor: FLOORS.UPPER,
+                imageSrc: '/images/tiles/foyer-bottom.jpg',
+                name: 'Stairs to Ground Floor',
+                directions: ['down'],
+                special: {
+                  transitionFloor: FLOORS.GROUND,
+                },
+              };
+            }
           }
-          else if(rowIndex === 11){
-            return {
-              floor: 'Ground Floor',
-              imageSrc: '/images/tiles/foyer-mid.jpg',
-              name: 'Dungeon',
-              directions: ['up', 'down', 'left', 'right'],
-            };
-          }
-          else if(rowIndex === 12){
-            return {
-              floor: 'Ground Floor',
-              imageSrc: '/images/tiles/foyer-bottom.jpg',
-              name: 'Living Room',
-              directions: ['up', 'down', 'left', 'right'],
-            };
-          }
-        } else {
-          // Use blank tiles for other positions
-          return {
-            floor: 'Ground Floor',
-            imageSrc: '/images/tiles/blank.jpg',
-            name: 'Blank',
-            directions: ['up', 'down', 'left', 'right'],
-          };
         }
+
+        // Use blank tiles for other positions
+        return {
+          floor: currentFloor,
+          imageSrc: '/images/tiles/blank.jpg',
+          name: 'Blank',
+          directions: ['up', 'down', 'left', 'right'],
+        };
       });
     });
   }
+
+  const handleFloorChange = (event) => {
+    const newFloor = event.target.value;
+    if (newFloor !== currentFloor) {
+      // Update the current floor and reset the player position
+      setCurrentFloor(newFloor);
+      setPlayerPosition({ row: 12, col: 11, floor: newFloor });
+    }
+  };
 
   const handleMouseDown = (e) => {
     setIsDragging(true);
@@ -729,10 +163,13 @@ function GameBoard() {
   };
 
   const handleMove = (direction) => {
+    console.log("Move")
     let canMove = true;
     // Calculate the new player position based on the direction
     let newRow = playerPosition.row;
     let newCol = playerPosition.col;
+
+    console.log("Player Position: " + playerPosition.row + ", " + playerPosition.col + ", " + playerPosition.floor)
   
     switch (direction) {
       case 'up':
@@ -752,10 +189,12 @@ function GameBoard() {
     }
   
     // Check if the new position is within the bounds of the game board
-    if (newRow >= 0 && newRow < tiles.length && newCol >= 0 && newCol < tiles[0].length) {
-      const currentTile = tiles[playerPosition.row][playerPosition.col];
-      const nextTile = tiles[newRow][newCol];
-  
+    if (newRow >= 0 && newRow < 24 && newCol >= 0 && newCol < 24) {
+      const currentTile = tiles[currentFloor][playerPosition.row][playerPosition.col];
+      const nextTile = tiles[currentFloor][newRow][newCol];
+      console.log("Player moving: " + direction);
+      console.log("Current tile: " + currentTile.directions);
+      console.log("Next tile: " + nextTile.directions);
       // Check if the current tile allows movement in the chosen direction
       if (currentTile.directions.includes(direction)) {
         // Check if the next tile has the opposite direction
@@ -764,7 +203,9 @@ function GameBoard() {
           // Check if the next tile is a blank tile
           if (nextTile.name === 'Blank') {
             // randomize the order of available tiles
-            const shuffledTiles = shuffleArray(availableTiles);
+            console.log(availableTiles)
+            console.log(availableTiles[currentFloor])
+            const shuffledTiles = shuffleArray(availableTiles[currentFloor]);
   
             // Find the first tile from the shuffled tiles that includes the opposite direction
             const drawnTile = shuffledTiles.find((tile) => tile.directions.includes(oppositeDirection));
@@ -773,13 +214,16 @@ function GameBoard() {
             }
   
             if (drawnTile) {
-              // Remove the drawn tile from availableTiles
-              const updatedAvailableTiles = availableTiles.filter((tile) => tile !== drawnTile);
+              // Remove the drawn tile from all floors availableTiles
+              const updatedAvailableTiles = availableTiles;
+              updatedAvailableTiles[FLOORS.BASEMENT] = updatedAvailableTiles[FLOORS.BASEMENT].filter((tile) => tile.name !== drawnTile.name);
+              updatedAvailableTiles[FLOORS.GROUND] = updatedAvailableTiles[FLOORS.GROUND].filter((tile) => tile.name !== drawnTile.name); 
+              updatedAvailableTiles[FLOORS.UPPER] = updatedAvailableTiles[FLOORS.UPPER].filter((tile) => tile.name !== drawnTile.name);
               setAvailableTiles(updatedAvailableTiles);
   
               // Replace the blank tile with the drawn tile
-              const updatedTiles = [...tiles];
-              updatedTiles[newRow][newCol] = drawnTile;
+              const updatedTiles = tiles;
+              updatedTiles[currentFloor][newRow][newCol] = drawnTile;
               setTiles(updatedTiles);
             }
           }
@@ -794,6 +238,7 @@ function GameBoard() {
 
   // Helper function to shuffle an array
   const shuffleArray = (array) => {
+    console.log(array)
     const shuffledArray = [...array];
     for (let i = shuffledArray.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
@@ -848,20 +293,30 @@ function GameBoard() {
           position: 'absolute', // Position the game board within the overlay
         }}
       >
-        {tiles.map((row, rowIndex) => (
-          <div key={rowIndex} className="row">
-            {row.map((tile, colIndex) => (
-              <Tile
-                key={colIndex}
-                floor={tile.floor}
-                imageSrc={tile.imageSrc}
-                name={tile.name}
-                directions={tile.directions}
-              />
-            ))}
-          </div>
-        ))}
+      {tiles[currentFloor].map((row, rowIndex) => (
+        <div key={rowIndex} className="row">
+          {row.map((tile, colIndex) => (
+            <Tile
+              key={colIndex}
+              floor={tile.floor}
+              imageSrc={tile.imageSrc}
+              name={tile.name}
+              directions={tile.directions}
+            />
+          ))}
+        </div>
+      ))}
         <Player row={playerTop} col={playerLeft} />
+      </div>
+      <div className='floor-select'>
+        <label>
+          Select Floor:
+          <select value={currentFloor} onChange={handleFloorChange}>
+            <option value={FLOORS.BASEMENT}>Basement</option>
+            <option value={FLOORS.GROUND}>Ground</option>
+            <option value={FLOORS.UPPER}>Upper</option>
+          </select>
+        </label>
       </div>
       <MovementButtons onMove={handleMove} />
     </div>

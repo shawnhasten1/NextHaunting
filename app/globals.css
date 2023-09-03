@@ -31,6 +31,22 @@ body {
   right: 0px;
   color: white;
 }
+
+img{
+  
+
+  /* Ignore click and touch events */
+  pointer-events: none;
+
+  /* No hightlighting */
+  -webkit-touch-callout: none; /* iOS Safari */
+  -webkit-user-select: none; /* Safari */
+  -khtml-user-select: none; /* Konqueror HTML */
+  -moz-user-select: none; /* Old versions of Firefox */
+  -ms-user-select: none; /* Internet Explorer/Edge */
+  user-select: none; /* Non-prefixed version, currently supported by Chrome, Edge, Opera and Firefox */
+}
+
 .row{
   max-height: 200px;
   display: flex;
@@ -55,17 +71,20 @@ body {
   display: block;
   border: 2px white solid;
   border-style: inset;
+}
 
-  /* Ignore click and touch events */
-  pointer-events: none;
+.floor-select{
+  position: absolute;
+  top: 0px;
+  right: 0px;
+}
 
-  /* No hightlighting */
-  -webkit-touch-callout: none; /* iOS Safari */
-  -webkit-user-select: none; /* Safari */
-  -khtml-user-select: none; /* Konqueror HTML */
-  -moz-user-select: none; /* Old versions of Firefox */
-  -ms-user-select: none; /* Internet Explorer/Edge */
-  user-select: none; /* Non-prefixed version, currently supported by Chrome, Edge, Opera and Firefox */
+.floor-select label{
+  color: white;
+}
+
+.floor-select select{
+  color: black;
 }
 
 .movement-buttons{
