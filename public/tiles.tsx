@@ -197,10 +197,10 @@ const basementTiles = [
         ], 
         imageSrc: "/images/tiles/tile_61.gif", 
         name: "Stairs From Basement", 
-        special:{
-            "status":"move",
-            "tile":"foyer.jpg"
-        }
+        special: {
+          transitionFloor: "FLOORS.GROUND",
+          transitionCoords: { row: 12, col: 10 },
+        },
     },
     {
         directions: [ 
@@ -378,8 +378,8 @@ const groundTiles = [
         imageSrc: "/images/tiles/tile_42.gif", 
         name: "Coal Chute", 
         special:{
-            "status":"move",
-            "tile":"tile_03.jpg"
+            transitionFloor: "FLOORS.GROUND",
+            transitionCoords: { row: 12, col: 10 },
         }
     },
     {

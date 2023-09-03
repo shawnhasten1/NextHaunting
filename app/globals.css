@@ -33,8 +33,6 @@ body {
 }
 
 img{
-  
-
   /* Ignore click and touch events */
   pointer-events: none;
 
@@ -61,6 +59,17 @@ img{
   border: 1px solid #000; /* Optional: Add borders for visualization */
   display: inline-block;
   position: relative;
+
+  /* Ignore click and touch events */
+  pointer-events: none;
+
+  /* No hightlighting */
+  -webkit-touch-callout: none; /* iOS Safari */
+  -webkit-user-select: none; /* Safari */
+  -khtml-user-select: none; /* Konqueror HTML */
+  -moz-user-select: none; /* Old versions of Firefox */
+  -ms-user-select: none; /* Internet Explorer/Edge */
+  user-select: none; /* Non-prefixed version, currently supported by Chrome, Edge, Opera and Firefox */
 }
 
 .tile img {
