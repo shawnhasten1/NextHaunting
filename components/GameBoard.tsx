@@ -45,6 +45,7 @@ function GameBoard() {
         // Add other stats like might, sanity, and knowledge here
       },
       lastTile: null,
+      visitedTiles: [], // Initialize an empty array to track visited tiles
     },
     // Add other players here with their initial positions and stats
   ]);
@@ -336,7 +337,18 @@ function GameBoard() {
               setTiles(updatedTiles);
           
               // After successful movement, decrement the currentPlayerSpeed
-              setCurrentPlayerSpeed(1);
+              setCurrentPlayerSpeed(0);
+
+              // Update the player's position
+              const allPlayers = players;
+              allPlayers[currentPlayerIndex].position = {
+                row: newRow,
+                col: newCol,
+                floor: currentFloor,
+              };
+              setPlayers(allPlayers);
+
+              canMove = false
             }
             try {
               if (drawnTile.special.transitionFloor !== undefined) {
@@ -439,8 +451,25 @@ function GameBoard() {
     }
     else if (tile.special.status !== undefined) {
       console.log("Status tile");
-      
-      modifyPlayerStat(tile.special.effect, tile.special.mod);
+
+      // Get current player
+      const currentPlayerObj = players[currentPlayerIndex];
+
+      // Check if the player has already visited this tile
+      if (!currentPlayerObj.visitedTiles.includes(tile.name)) {
+        // Add the tile to the visitedTiles array
+        currentPlayerObj.visitedTiles.push(tile.name);
+
+        // Modify the player's stat based on the effect
+        modifyPlayerStat(tile.special.effect, tile.special.mod);
+  
+        // Update the player's position in the players array
+        setPlayers((prevPlayers) =>
+          prevPlayers.map((player) =>
+            player.id === currentPlayerObj.id ? currentPlayerObj : player
+          )
+        );
+      }
     }
     return true;
   };
