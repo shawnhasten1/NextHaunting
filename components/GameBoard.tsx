@@ -5,12 +5,7 @@ import Tile from "./Tile";
 import Player from "./Player";
 import MovementButtons from "./MovementButtons";
 
-// Define constants for floors
-const FLOORS = {
-  BASEMENT: 'Basement',
-  GROUND: 'Ground',
-  UPPER: 'Upper',
-};
+import { templateAvailableTiles, FLOORS } from '@/public/tiles';
 
 function GameBoard() {
 
@@ -30,619 +25,11 @@ function GameBoard() {
   });
 
   // Define the list of available tiles as a state variable
-  const [availableTiles, setAvailableTiles] = useState({
-    [FLOORS.BASEMENT]: [
-      {
-        directions: ["right", "down"],
-        floor: ["upper", "basement"],
-        imageSrc: "/images/tiles/tile_21.gif",
-        name: "Gymnasium",
-        special: {},
-      },
-      {
-        directions: ["left", "up", "down"],
-        floor: ["basement"],
-        imageSrc: "/images/tiles/tile_58.gif",
-        name: "Furnace Room",
-        special: {
-          status: "end",
-          effect: "health",
-          mod: -1,
-        },
-      },
-      {
-        directions: ["left", "up", "right", "down"],
-        floor: ["upper", "ground", "basement"],
-        imageSrc: "/images/tiles/tile_06.gif",
-        name: "Dusty Hallway",
-        special: {},
-      },
-      {
-        directions: ["up", "right"],
-        floor: ["ground", "basement"],
-        imageSrc: "/images/tiles/tile_50.gif",
-        name: "Kitchen",
-        special: {},
-      },
-      {
-        directions: ["up"],
-        floor: ["upper", "basement"],
-        imageSrc: "/images/tiles/tile_25.gif",
-        name: "Storeroom",
-        special: {},
-      },
-      {
-        directions: ["up", "down"],
-        floor: ["basement"],
-        imageSrc: "/images/tiles/tile_59.gif",
-        name: "Larder",
-        special: {
-          status: "end",
-          effect: "might",
-          mod: 1,
-        },
-      },
-      {
-        directions: ["left", "up", "right", "down"],
-        floor: ["upper", "ground", "basement"],
-        imageSrc: "/images/tiles/tile_08.gif",
-        name: "Junk Room",
-        special: {
-          status: "exit",
-          effect: "speed",
-          mod: -1,
-          challenge: "might",
-          challenge_mod: 3,
-        },
-      },
-      {
-        directions: ["right"],
-        floor: ["basement"],
-        imageSrc: "/images/tiles/tile_60.gif",
-        name: "Pentagram Room",
-        special: {
-          status: "exit",
-          effect: "sanity",
-          mod: -1,
-          challenge: "knowledge",
-          challenge_mod: 4,
-        },
-      },
-      {
-        directions: ["right", "down"],
-        floor: ["upper", "basement"],
-        imageSrc: "/images/tiles/tile_22.gif",
-        name: "Operating Laboratory",
-        special: {},
-      },
-      {
-        directions: ["left", "up", "right", "down"],
-        floor: ["upper", "basement"],
-        imageSrc: "/images/tiles/tile_24.gif",
-        name: "Servants Quarters",
-        special: {},
-      },
-      {
-        directions: ["up"],
-        floor: ["upper", "basement"],
-        imageSrc: "/images/tiles/tile_26.gif",
-        name: "Junk Room",
-        special: {
-          status: "challenge",
-          effect: "item",
-          mod: 2,
-          challenge: "knowledge",
-          challenge_mod: 6,
-        },
-      },
-      {
-        directions: ["up"],
-        floor: ["upper", "ground", "basement"],
-        imageSrc: "/images/tiles/tile_09.gif",
-        name: "Mystic Elevator",
-        special: {
-          status: "move",
-          effect: "elevator",
-        },
-      },
-      {
-        directions: ["up", "down"],
-        floor: ["basement"],
-        imageSrc: "/images/tiles/tile_61.gif",
-        name: "Stairs From Basement",
-        special: {
-          transitionFloor: FLOORS.GROUND,
-          transitionCoords: { row: 12, col: 11 },
-        },
-      },
-      {
-        directions: ["left", "up", "right", "down"],
-        floor: ["ground", "basement"],
-        imageSrc: "/images/tiles/tile_48.gif",
-        name: "Abandoned Room",
-        special: {},
-      },
-      {
-        directions: ["up", "down"],
-        floor: ["basement"],
-        imageSrc: "/images/tiles/tile_53.gif",
-        name: "Catacombs",
-        special: {
-          status: "challenge",
-          effect: "move",
-          challenge: "sanity",
-          challenge_mod: 6,
-        },
-      },
-      {
-        directions: ["left", "up", "right", "down"],
-        floor: ["upper", "ground", "basement"],
-        imageSrc: "/images/tiles/tile_05.gif",
-        name: "Creaky Hallway",
-        special: {},
-      },
-      {
-        directions: ["up", "down"],
-        floor: ["upper", "ground", "basement"],
-        imageSrc: "/images/tiles/tile_11.gif",
-        name: "Statuary Corridor",
-        special: {},
-      },
-      {
-        directions: ["up", "right", "down"],
-        floor: ["upper", "ground", "basement"],
-        imageSrc: "/images/tiles/tile_07.gif",
-        name: "Game Room",
-        special: {},
-      },
-      {
-        directions: ["left", "right"],
-        floor: ["basement"],
-        imageSrc: "/images/tiles/tile_55.gif",
-        name: "Chasm",
-        special: {
-          status: "challenge",
-          effect: "move",
-          challenge: "speed",
-          challenge_mod: 3,
-        },
-      },
-      {
-        directions: ["up", "down"],
-        floor: ["basement"],
-        imageSrc: "/images/tiles/tile_64.gif",
-        name: "Wine Cellar",
-        special: {},
-      },
-      {
-        directions: ["left", "down"],
-        floor: ["upper", "ground", "basement"],
-        imageSrc: "/images/tiles/tile_10.gif",
-        name: "Organ Room",
-        special: {},
-      },
-      {
-        directions: ["up"],
-        floor: ["basement"],
-        imageSrc: "/images/tiles/tile_56.gif",
-        name: "Crypt",
-        special: {
-          status: "end",
-          effect: "mental",
-          mod: -1,
-        },
-      },
-      {
-        directions: ["up", "down"],
-        floor: ["upper", "basement"],
-        imageSrc: "/images/tiles/tile_23.gif",
-        name: "Research Laboratory",
-        special: {},
-      },
-    ], // Replace with actual tiles
-    [FLOORS.GROUND]: [
-      {
-        directions: ["left", "up", "right", "down"],
-        floor: ["upper", "ground"],
-        imageSrc: "/images/tiles/tile_37.gif",
-        name: "Collapsed Room",
-        special: {},
-      },
-      {
-        directions: ["up"],
-        floor: ["ground"],
-        imageSrc: "/images/tiles/tile_42.gif",
-        name: "Coal Chute",
-        special: {
-          transitionFloor: FLOORS.BASEMENT,
-          transitionCoords: { row: 12, col: 11 },
-        },
-      },
-      {
-        directions: ["right", "up"],
-        floor: ["ground"],
-        imageSrc: "/images/tiles/tile_43.gif",
-        name: "Dining Room",
-        special: {},
-      },
-      {
-        directions: ["left", "up", "right", "down"],
-        floor: ["upper", "ground", "basement"],
-        imageSrc: "/images/tiles/tile_06.gif",
-        name: "Dusty Hallway",
-        special: {},
-      },
-      {
-        directions: ["up", "right"],
-        floor: ["ground", "basement"],
-        imageSrc: "/images/tiles/tile_50.gif",
-        name: "Kitchen",
-        special: {},
-      },
-      {
-        directions: ["left", "up", "down"],
-        floor: ["ground"],
-        imageSrc: "/images/tiles/tile_46.gif",
-        name: "Patio",
-        special: {},
-      },
-      {
-        directions: ["left", "down"],
-        floor: ["upper", "ground"],
-        imageSrc: "/images/tiles/tile_39.gif",
-        name: "Library",
-        special: {
-          status: "end",
-          effect: "knowledge",
-          mod: 1,
-        },
-      },
-      {
-        directions: ["left", "up", "right", "down"],
-        floor: ["upper", "ground", "basement"],
-        imageSrc: "/images/tiles/tile_08.gif",
-        name: "Junk Room",
-        special: {
-          status: "exit",
-          effect: "speed",
-          mod: -1,
-          challenge: "might",
-          challenge_mod: 3,
-        },
-      },
-      {
-        directions: ["up", "down"],
-        floor: ["ground"],
-        imageSrc: "/images/tiles/tile_44.gif",
-        name: "Gardens",
-        special: {},
-      },
-      {
-        directions: ["left", "up", "right", "down"],
-        floor: ["ground"],
-        imageSrc: "/images/tiles/tile_41.gif",
-        name: "Ballroom",
-        special: {},
-      },
-      {
-        directions: ["left", "up", "right", "down"],
-        floor: ["upper", "ground"],
-        imageSrc: "/images/tiles/tile_36.gif",
-        name: "Charred Room",
-        special: {},
-      },
-      {
-        directions: ["up"],
-        floor: ["upper", "ground"],
-        imageSrc: "/images/tiles/tile_35.gif",
-        name: "Chapel",
-        special: {
-          status: "end",
-          effect: "sanity",
-          mod: 1,
-        },
-      },
-      {
-        directions: ["up"],
-        floor: ["upper", "ground", "basement"],
-        imageSrc: "/images/tiles/tile_09.gif",
-        name: "Mystic Elevator",
-        special: {
-          status: "move",
-          effect: "elevator",
-        },
-      },
-      {
-        directions: ["up"],
-        floor: ["upper", "ground"],
-        imageSrc: "/images/tiles/tile_38.gif",
-        name: "Consevatory",
-        special: {},
-      },
-      {
-        directions: ["left", "up", "right", "down"],
-        floor: ["ground", "basement"],
-        imageSrc: "/images/tiles/tile_48.gif",
-        name: "Abandoned Room",
-        special: {},
-      },
-      {
-        directions: ["left", "up", "right", "down"],
-        floor: ["upper", "ground", "basement"],
-        imageSrc: "/images/tiles/tile_05.gif",
-        name: "Creaky Hallway",
-        special: {},
-      },
-      {
-        directions: ["up", "down"],
-        floor: ["upper", "ground", "basement"],
-        imageSrc: "/images/tiles/tile_11.gif",
-        name: "Statuary Corridor",
-        special: {},
-      },
-      {
-        directions: ["up", "right", "down"],
-        floor: ["upper", "ground", "basement"],
-        imageSrc: "/images/tiles/tile_07.gif",
-        name: "Game Room",
-        special: {},
-      },
-      {
-        directions: ["left", "down"],
-        floor: ["upper", "ground", "basement"],
-        imageSrc: "/images/tiles/tile_10.gif",
-        name: "Organ Room",
-        special: {},
-      },
-      {
-        directions: ["left", "up", "right", "down"],
-        floor: ["upper", "ground"],
-        imageSrc: "/images/tiles/tile_34.gif",
-        name: "Bloody Room",
-        special: {},
-      },
-      {
-        directions: ["down"],
-        floor: ["ground"],
-        imageSrc: "/images/tiles/tile_45.gif",
-        name: "Graveyard",
-        special: {
-          status: "exit",
-          effect: "knowledge",
-          mod: -1,
-          challenge: "sanity",
-          challenge_mod: 4,
-        },
-      },
-    ], // Replace with actual tiles
-    [FLOORS.UPPER]: [
-      {
-        directions: ["right", "down"],
-        floor: ["upper", "basement"],
-        imageSrc: "/images/tiles/tile_21.gif",
-        name: "Gymnasium",
-        special: {},
-      },
-      {
-        directions: ["left", "up", "right", "down"],
-        floor: ["upper", "ground"],
-        imageSrc: "/images/tiles/tile_37.gif",
-        name: "Collapsed Room",
-        special: {},
-      },
-      {
-        directions: ["down"],
-        floor: ["upper"],
-        imageSrc: "/images/tiles/tile_27.gif",
-        name: "Attic",
-        special: {
-          status: "end",
-          effect: "might",
-          mod: -1,
-          challenge: "speed",
-          challenge_mod: 3,
-        },
-      },
-      {
-        directions: ["left", "up", "right", "down"],
-        floor: ["upper", "ground", "basement"],
-        imageSrc: "/images/tiles/tile_06.gif",
-        name: "Dusty Hallway",
-        special: {},
-      },
-      {
-        directions: ["up", "right"],
-        floor: ["upper"],
-        imageSrc: "/images/tiles/tile_63.gif",
-        name: "Underground Lake",
-        special: {},
-      },
-      {
-        directions: ["left", "right"],
-        floor: ["upper"],
-        imageSrc: "/images/tiles/tile_29.gif",
-        name: "Bedroom",
-        special: {},
-      },
-      {
-        directions: ["left", "down"],
-        floor: ["upper", "ground"],
-        imageSrc: "/images/tiles/tile_39.gif",
-        name: "Library",
-        special: {
-          status: "end",
-          effect: "knowledge",
-          mod: 1,
-        },
-      },
-      {
-        directions: ["up"],
-        floor: ["upper", "basement"],
-        imageSrc: "/images/tiles/tile_25.gif",
-        name: "Storeroom",
-        special: {},
-      },
-      {
-        directions: ["left", "up", "right", "down"],
-        floor: ["upper", "ground", "basement"],
-        imageSrc: "/images/tiles/tile_08.gif",
-        name: "Junk Room",
-        special: {
-          status: "exit",
-          effect: "speed",
-          mod: -1,
-          challenge: "might",
-          challenge_mod: 3,
-        },
-      },
-      {
-        directions: ["up", "down"],
-        floor: ["upper"],
-        imageSrc: "/images/tiles/tile_28.gif",
-        name: "Balcony",
-        special: {},
-      },
-      {
-        directions: ["left", "up", "right", "down"],
-        floor: ["upper", "ground"],
-        imageSrc: "/images/tiles/tile_36.gif",
-        name: "Charred Room",
-        special: {},
-      },
-      {
-        directions: ["right", "down"],
-        floor: ["upper", "basement"],
-        imageSrc: "/images/tiles/tile_22.gif",
-        name: "Operating Laboratory",
-        special: {},
-      },
-      {
-        directions: ["up"],
-        floor: ["upper", "ground"],
-        imageSrc: "/images/tiles/tile_35.gif",
-        name: "Chapel",
-        special: {
-          status: "end",
-          effect: "sanity",
-          mod: 1,
-        },
-      },
-      {
-        directions: ["left", "up", "right", "down"],
-        floor: ["upper", "basement"],
-        imageSrc: "/images/tiles/tile_24.gif",
-        name: "Servants Quarters",
-        special: {},
-      },
-      {
-        directions: ["left", "up"],
-        floor: ["upper"],
-        imageSrc: "/images/tiles/tile_31.gif",
-        name: "Junk Room",
-        special: {},
-      },
-      {
-        directions: ["up"],
-        floor: ["upper", "basement"],
-        imageSrc: "/images/tiles/tile_26.gif",
-        name: "Junk Room",
-        special: {
-          status: "challenge",
-          effect: "item",
-          mod: 2,
-          challenge: "knowledge",
-          challenge_mod: 6,
-        },
-      },
-      {
-        directions: ["up"],
-        floor: ["upper", "ground", "basement"],
-        imageSrc: "/images/tiles/tile_09.gif",
-        name: "Mystic Elevator",
-        special: {
-          status: "move",
-          effect: "elevator",
-        },
-      },
-      {
-        directions: ["up", "down"],
-        floor: ["upper"],
-        imageSrc: "/images/tiles/tile_30.gif",
-        name: "Gallery",
-        special: {
-          status: "move_optional",
-          tile: "tile_41.jpg",
-          effect: "physical",
-          mod: -1,
-        },
-      },
-      {
-        directions: ["up"],
-        floor: ["upper", "ground"],
-        imageSrc: "/images/tiles/tile_38.gif",
-        name: "Consevatory",
-        special: {},
-      },
-      {
-        directions: ["left", "right"],
-        floor: ["upper"],
-        imageSrc: "/images/tiles/tile_32.gif",
-        name: "Tower",
-        special: {
-          status: "challenge",
-          effect: "move",
-          challenge: "might",
-          challenge_mod: 3,
-        },
-      },
-      {
-        directions: ["left", "up", "right", "down"],
-        floor: ["upper", "ground", "basement"],
-        imageSrc: "/images/tiles/tile_05.gif",
-        name: "Creaky Hallway",
-        special: {},
-      },
-      {
-        directions: ["up", "down"],
-        floor: ["upper", "ground", "basement"],
-        imageSrc: "/images/tiles/tile_11.gif",
-        name: "Statuary Corridor",
-        special: {},
-      },
-      {
-        directions: ["up", "right", "down"],
-        floor: ["upper", "ground", "basement"],
-        imageSrc: "/images/tiles/tile_07.gif",
-        name: "Game Room",
-        special: {},
-      },
-      {
-        directions: ["left", "down"],
-        floor: ["upper", "ground", "basement"],
-        imageSrc: "/images/tiles/tile_10.gif",
-        name: "Organ Room",
-        special: {},
-      },
-      {
-        directions: ["left", "up", "right", "down"],
-        floor: ["upper", "ground"],
-        imageSrc: "/images/tiles/tile_34.gif",
-        name: "Bloody Room",
-        special: {},
-      },
-      {
-        directions: ["up", "down"],
-        floor: ["upper", "basement"],
-        imageSrc: "/images/tiles/tile_23.gif",
-        name: "Research Laboratory",
-        special: {},
-      },
-    ], // Replace with actual tiles
-  });
+  const [availableTiles, setAvailableTiles] = useState(templateAvailableTiles);
 
   const [isDragging, setIsDragging] = useState(false);
   const [startPosition, setStartPosition] = useState({ x: -1600, y: -1900 });
-  const [transform, setTransform] = useState({ x: -1600, y: -1900 });
+  const [transform, setTransform] = useState({ x: -1600, y: -1900, scale: 1 });
 
   // Create a state variable to manage the players
   const [players, setPlayers] = useState([
@@ -652,8 +39,12 @@ function GameBoard() {
       position: { row: 12, col: 11, floor: FLOORS.GROUND },
       stats: {
         speed: 5,
+        might: 5,
+        sanity: 5,
+        knowledge: 5,
         // Add other stats like might, sanity, and knowledge here
       },
+      lastTile: null,
     },
     // Add other players here with their initial positions and stats
   ]);
@@ -759,9 +150,12 @@ function GameBoard() {
       // Calculate the new transform values to center the player
       const newTransformX = screenWidth / 2 - playerCenterLeft - tileWidth / 2;
       const newTransformY = screenHeight / 2 - playerCenterTop - tileHeight / 2;
+
+      // Get the current zoom level
+      const currentZoom = transform.scale;
   
       // Update the game board's transform
-      setTransform({ x: newTransformX, y: newTransformY });
+      setTransform({ x: newTransformX, y: newTransformY, scale: currentZoom });
     }, 200);
   };
 
@@ -771,6 +165,23 @@ function GameBoard() {
       // Update the current floor and reset the player position
       setCurrentFloor(newFloor);
     }
+  };
+
+  // Handle zoom in and zoom out
+  const handleZoomIn = () => {
+    // Increase the zoom level by a factor
+    setTransform((prevTransform) => ({
+      ...prevTransform,
+      scale: prevTransform.scale * 1.2, // You can adjust the zoom factor as needed
+    }));
+  };
+
+  const handleZoomOut = () => {
+    // Decrease the zoom level by a factor
+    setTransform((prevTransform) => ({
+      ...prevTransform,
+      scale: prevTransform.scale / 1.2, // You can adjust the zoom factor as needed
+    }));
   };
 
   const handleMouseDown = (e) => {
@@ -784,9 +195,13 @@ function GameBoard() {
     const deltaX = e.clientX - startPosition.x;
     const deltaY = e.clientY - startPosition.y;
 
+    // Get the current zoom value
+    const currentZoom = transform.scale;
+
     setTransform((prevTransform) => ({
       x: prevTransform.x + deltaX,
       y: prevTransform.y + deltaY,
+      scale: currentZoom,
     }));
 
     setStartPosition({ x: e.clientX, y: e.clientY });
@@ -806,9 +221,13 @@ function GameBoard() {
     const deltaX = touch.clientX - startPosition.x;
     const deltaY = touch.clientY - startPosition.y;
 
+    // Get the current zoom value
+    const currentZoom = transform.scale;
+
     setTransform((prevTransform) => ({
       x: prevTransform.x + deltaX,
       y: prevTransform.y + deltaY,
+      scale: currentZoom,
     }));
 
     setStartPosition({ x: touch.clientX, y: touch.clientY });
@@ -830,6 +249,7 @@ function GameBoard() {
       // Player doesn't have enough speed left
       return;
     }
+    const currentSpeedRemaining = currentPlayerSpeed - 1;
 
     // Find the current player based on their ID
     const currentPlayerObj = players[currentPlayerIndex];
@@ -840,6 +260,8 @@ function GameBoard() {
     let newRow = currentPlayerObj.position.row;
     let newCol = currentPlayerObj.position.col;
 
+    // Get the current tile
+    const lastTile = tiles[currentFloor][newRow][newCol];
 
     console.log(
       "Player Position: " +
@@ -867,15 +289,19 @@ function GameBoard() {
         break;
     }
 
+    const nextTile = tiles[currentFloor][newRow][newCol];
+
     // Check if the new position is within the bounds of the game board
     if (newRow >= 0 && newRow < numRows  && newCol >= 0 && newCol < numCols ) {
       const currentTile =
         tiles[currentFloor][currentPlayerObj.position.row][currentPlayerObj.position.col];
-      const nextTile = tiles[currentFloor][newRow][newCol];
       // Check if the current tile allows movement in the chosen direction
       if (currentTile.directions.includes(direction)) {
         // Check if the next tile has the opposite direction
         const oppositeDirection = getOppositeDirection(direction);
+        //console.log("Player Move: "+direction);
+        //console.log("Opposite Direction: "+oppositeDirection);
+        //console.log("Next Tile: "+nextTile.directions);
         if (nextTile.directions.includes(oppositeDirection)) {
           // Check if the next tile is a blank tile
           if (nextTile.name === "Blank") {
@@ -913,23 +339,35 @@ function GameBoard() {
               setCurrentPlayerSpeed(1);
             }
             try {
-              if (drawnTile.special !== undefined) {
+              if (drawnTile.special.transitionFloor !== undefined) {
                 canMove = handleSpecialMove(drawnTile);
               }
             } catch (err) {
-              console.log("No Special: " + drawnTile);
+              //console.log("No Special: " + drawnTile);
             }
           }
           try {
-            if (nextTile.special !== undefined) {
+            if (nextTile.special.transitionFloor !== undefined) {
               canMove = handleSpecialMove(nextTile);
             }
           } catch (err) {
-            console.log("No Special: " + nextTile);
+            //console.log("No Special: " + nextTile);
           }
+        }
+        else{
+          canMove = false;
         }
 
         if (canMove) {
+          // Store the last tile
+          storeLastTile(lastTile);
+
+          // If current tile special is not undefined, handle the special
+          if (lastTile.special.status === "exit") {
+            console.log("Exited a Special Tile");
+            handleSpecialMove(lastTile);
+          }
+
           // Update the player's position
           const allPlayers = players;
           allPlayers[currentPlayerIndex].position = {
@@ -940,7 +378,7 @@ function GameBoard() {
           setPlayers(allPlayers);
           
           // After successful movement, decrement the currentPlayerSpeed
-          setCurrentPlayerSpeed((prevSpeed) => prevSpeed - 1);
+          setCurrentPlayerSpeed(currentSpeedRemaining);
 
           // Update the player's position in the players array
           setPlayers((prevPlayers) =>
@@ -949,10 +387,24 @@ function GameBoard() {
             )
           );
         }
+        console.log("Current Speed Remaining: " + currentSpeedRemaining)
 
         // Check if the player has used up their available speed for this turn
-        if (currentPlayerSpeed === 0) {
-          nextTurn(); // End the player's turn
+        if (currentSpeedRemaining <= 0) {
+          // If the tile has a special, handle it
+          console.log(nextTile);
+          if (nextTile.special.status !== undefined) {
+            if (nextTile.special.status === "end") {
+              console.log("Ended Turn on Special Tile");
+              handleSpecialMove(nextTile);
+            }
+            else{
+              nextTurn(); // End the player's turn
+            }
+          }
+          else{
+            nextTurn(); // End the player's turn
+          }
         }
       }
     }
@@ -981,21 +433,57 @@ function GameBoard() {
       // After successful movement, decrement the currentPlayerSpeed
       setCurrentPlayerSpeed((prevSpeed) => prevSpeed - 1);
 
-      // Check if the player has used up their available speed for this turn
-      if (currentPlayerSpeed === 0) {
-        nextTurn(); // End the player's turn
-      }
-
       // Center the player on the screen
       centerPlayerOnScreen();
       return false;
     }
+    else if (tile.special.status !== undefined) {
+      console.log("Status tile");
+      
+      modifyPlayerStat(tile.special.effect, tile.special.mod);
+    }
     return true;
+  };
+
+  // Function that modifies a player's stat
+  const modifyPlayerStat = (stat, mod) => {
+    // Find the current player based on their index
+    const currentPlayerObj = players[currentPlayerIndex];
+  
+    // Update the player's stat
+    currentPlayerObj.stats[stat] += mod;
+  
+    // Ensure the stat doesn't go below zero (optional)
+    if (currentPlayerObj.stats[stat] < 0) {
+      currentPlayerObj.stats[stat] = 0;
+    }
+  
+    // Update the player's position in the players array
+    setPlayers((prevPlayers) =>
+      prevPlayers.map((player) =>
+        player.id === currentPlayerObj.id ? currentPlayerObj : player
+      )
+    );
+  };
+
+  // Function that stores the last tile the player was on
+  const storeLastTile = (tile) => {
+    // Find the current player based on their index
+    const currentPlayerObj = players[currentPlayerIndex];
+
+    // Update the player's last tile
+    currentPlayerObj.lastTile = tile;
+    
+    // Update the player's position in the players array
+    setPlayers((prevPlayers) =>
+      prevPlayers.map((player) =>
+        player.id === currentPlayerObj.id ? currentPlayerObj : player
+      )
+    );
   };
 
   // Helper function to shuffle an array
   const shuffleArray = (array) => {
-    console.log(array);
     const shuffledArray = [...array];
     for (let i = shuffledArray.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
@@ -1057,7 +545,7 @@ function GameBoard() {
       <div
         className="game-board"
         style={{
-          transform: `translate(${transform.x}px, ${transform.y}px)`,
+          transform: `translate(${transform.x}px, ${transform.y}px) scale(${transform.scale})`, // Translate the game board based on the transform state and the current scale
           position: "absolute", // Position the game board within the overlay
         }}
       >
@@ -1098,8 +586,11 @@ function GameBoard() {
       <MovementButtons
         onMove={handleMove}
         currentPlayerName={players[currentPlayerIndex].name}
+        currentPlayerStats={players[currentPlayerIndex].stats}
         currentPlayerSpeed={currentPlayerSpeed}
         onResetTurn={resetTurn}
+        onZoomIn={handleZoomIn}
+        onZoomOut={handleZoomOut}
       />
     </div>
   );
