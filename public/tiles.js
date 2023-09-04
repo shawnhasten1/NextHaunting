@@ -127,6 +127,7 @@ export const templateAvailableTiles = {
         special: {
           transitionFloor: FLOORS.GROUND,
           transitionCoords: { row: 12, col: 11 },
+          mandatory: true,
         },
       },
       {
@@ -293,6 +294,7 @@ export const templateAvailableTiles = {
         special: {
           transitionFloor: FLOORS.BASEMENT,
           transitionCoords: { row: 12, col: 11 },
+          mandatory: true,
         },
       },
       {

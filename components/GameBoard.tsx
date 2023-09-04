@@ -46,6 +46,7 @@ function GameBoard() {
       },
       lastTile: null,
       visitedTiles: [], // Initialize an empty array to track visited tiles
+      canAction: false,
     },
     // Add other players here with their initial positions and stats
   ]);
@@ -75,6 +76,7 @@ function GameBoard() {
                 special: {
                   transitionFloor: FLOORS.UPPER,
                   transitionCoords: { row: 12, col: 11 },
+                  mandatory: true,
                 },
               };
             }
@@ -107,6 +109,7 @@ function GameBoard() {
                 special: {
                   transitionFloor: FLOORS.GROUND,
                   transitionCoords: { row: 10, col: 11 },
+                  mandatory: false,
                 },
               };
             }
@@ -257,6 +260,8 @@ function GameBoard() {
 
     console.log("Move");
     let canMove = true;
+
+    let moveToNextTurn = false;
     // Calculate the current player's new position
     let newRow = currentPlayerObj.position.row;
     let newCol = currentPlayerObj.position.col;
@@ -290,7 +295,7 @@ function GameBoard() {
         break;
     }
 
-    const nextTile = tiles[currentFloor][newRow][newCol];
+    let nextTile = tiles[currentFloor][newRow][newCol];
 
     // Check if the new position is within the bounds of the game board
     if (newRow >= 0 && newRow < numRows  && newCol >= 0 && newCol < numCols ) {
@@ -318,6 +323,7 @@ function GameBoard() {
             }
 
             if (drawnTile) {
+              nextTile = drawnTile;
               // Remove the drawn tile from all floors availableTiles
               const updatedAvailableTiles = availableTiles;
               updatedAvailableTiles[FLOORS.BASEMENT] = updatedAvailableTiles[
@@ -338,6 +344,7 @@ function GameBoard() {
           
               // After successful movement, decrement the currentPlayerSpeed
               setCurrentPlayerSpeed(0);
+              moveToNextTurn = true;
 
               // Update the player's position
               const allPlayers = players;
@@ -348,11 +355,35 @@ function GameBoard() {
               };
               setPlayers(allPlayers);
 
-              canMove = false
+              canMove = false;
+              console.log(lastTile);
+              if (lastTile.special.status === "exit") {
+                console.log("Exited a Special Tile");
+                handleSpecialMove(lastTile);
+              }
+              
             }
             try {
               if (drawnTile.special.transitionFloor !== undefined) {
-                canMove = handleSpecialMove(drawnTile);
+                if (drawnTile.special.mandatory === true) {
+                  canMove = handleSpecialMove(drawnTile);
+                }
+                else{
+                  canMove = true;
+
+                  console.log("Moved to tile with an actionable special")
+
+                  // Update can action to true
+                  const allPlayers = players;
+                  allPlayers[currentPlayerIndex].canAction = true;
+                  setPlayers(allPlayers);
+                }
+              }
+              else{
+                // Update can action to true
+                const allPlayers = players;
+                allPlayers[currentPlayerIndex].canAction = false;
+                setPlayers(allPlayers);
               }
             } catch (err) {
               //console.log("No Special: " + drawnTile);
@@ -360,7 +391,25 @@ function GameBoard() {
           }
           try {
             if (nextTile.special.transitionFloor !== undefined) {
-              canMove = handleSpecialMove(nextTile);
+              if (nextTile.special.mandatory === true) {
+                canMove = handleSpecialMove(nextTile);
+              }
+              else{
+                canMove = true;
+
+                console.log("Moved to tile with an actionable special")
+
+                // Update can action to true
+                const allPlayers = players;
+                allPlayers[currentPlayerIndex].canAction = true;
+                setPlayers(allPlayers);
+              }
+            }
+            else{
+              // Update can action to true
+              const allPlayers = players;
+              allPlayers[currentPlayerIndex].canAction = false;
+              setPlayers(allPlayers);
             }
           } catch (err) {
             //console.log("No Special: " + nextTile);
@@ -369,12 +418,13 @@ function GameBoard() {
         else{
           canMove = false;
         }
+        // Store the last tile
+        storeLastTile(lastTile);
 
         if (canMove) {
-          // Store the last tile
-          storeLastTile(lastTile);
 
           // If current tile special is not undefined, handle the special
+          console.log(lastTile);
           if (lastTile.special.status === "exit") {
             console.log("Exited a Special Tile");
             handleSpecialMove(lastTile);
@@ -390,6 +440,7 @@ function GameBoard() {
           setPlayers(allPlayers);
           
           // After successful movement, decrement the currentPlayerSpeed
+          //console.log("\n" + currentPlayerSpeed + "\n");
           setCurrentPlayerSpeed(currentSpeedRemaining);
 
           // Update the player's position in the players array
@@ -399,7 +450,7 @@ function GameBoard() {
             )
           );
         }
-        console.log("Current Speed Remaining: " + currentSpeedRemaining)
+        //console.log("Current Speed Remaining: " + currentSpeedRemaining)
 
         // Check if the player has used up their available speed for this turn
         if (currentSpeedRemaining <= 0) {
@@ -417,6 +468,10 @@ function GameBoard() {
           else{
             nextTurn(); // End the player's turn
           }
+        }
+
+        if (moveToNextTurn){
+          nextTurn();
         }
       }
     }
@@ -443,6 +498,7 @@ function GameBoard() {
       setPlayers(allPlayers);
 
       // After successful movement, decrement the currentPlayerSpeed
+      //console.log("\n" + currentPlayerSpeed + "\n");
       setCurrentPlayerSpeed((prevSpeed) => prevSpeed - 1);
 
       // Center the player on the screen
@@ -511,6 +567,22 @@ function GameBoard() {
     );
   };
 
+  // Handle Action Button Click if the player can action
+  const handleActionButtonClick = () => {
+    console.log("Action Button Clicked")
+    // Get the current player
+    const currentPlayerObj = players[currentPlayerIndex];
+
+    // Check if the player can action
+    if (currentPlayerObj.canAction) {
+      // Get the current tile based on the player's position and the floor they are on
+      const currentTile = tiles[currentPlayerObj.position.floor][currentPlayerObj.position.row][currentPlayerObj.position.col];
+
+      // Handle special move
+      handleSpecialMove(currentTile);
+    }
+  };
+
   // Helper function to shuffle an array
   const shuffleArray = (array) => {
     const shuffledArray = [...array];
@@ -546,12 +618,14 @@ function GameBoard() {
     setCurrentPlayer((prevPlayer) => (prevPlayer + 1) % players.length);
 
     // Reset the current player's speed to their initial speed
+    //console.log("\n" + currentPlayerSpeed + "\n");
     setCurrentPlayerSpeed(players[currentPlayer].stats.speed);
   };
 
   // Reset the turn to be the first player's turn and set the current player's speed to their initial speed
   const resetTurn = () => {
     setCurrentPlayer(0);
+    //console.log("\n" + currentPlayerSpeed + "\n");
     setCurrentPlayerSpeed(players[0].stats.speed);
   };
 
@@ -620,6 +694,7 @@ function GameBoard() {
         onResetTurn={resetTurn}
         onZoomIn={handleZoomIn}
         onZoomOut={handleZoomOut}
+        onActionButtonClick={handleActionButtonClick}
       />
     </div>
   );

@@ -1,6 +1,6 @@
 import React from 'react';
 
-function MovementButtons({ onMove, currentPlayerName, currentPlayerStats, currentPlayerSpeed, onResetTurn, onZoomIn, onZoomOut }) {
+function MovementButtons({ onMove, currentPlayerName, currentPlayerStats, currentPlayerSpeed, onResetTurn, onZoomIn, onZoomOut, onActionButtonClick }) {
   const handleMove = (direction) => {
     // Call the provided callback with the direction when a button is clicked
     onMove(direction);
@@ -11,48 +11,48 @@ function MovementButtons({ onMove, currentPlayerName, currentPlayerStats, curren
     onResetTurn();
   };
 
-  return (
-    <div className="movement-buttons">
-      {/* Player info section (on the left) */}
-      <div className="player-info-section">
-        {/* Display current player's name */}
-        <div className="player-info">
-          <p>Current Player: {currentPlayerName}</p>
+  return (    
+    <div className="flex justify-between items-center p-4 bg-gray-900 absolute bottom-0 w-full">
+        <div className="profile">
+            <div className="w-16 h-16 border-2 border-white rounded-full"></div>
+            <div className="player-info">
+              <p>Current Player: {currentPlayerName}</p>
+            </div>
+            
+            {/* Display current player's remaining speed */}
+            <div className="player-info">
+              <p>Remaining Speed: {currentPlayerSpeed}</p>
+            </div>
         </div>
-        
-        {/* Display current player's remaining speed */}
-        <div className="player-info">
-          <p>Remaining Speed: {currentPlayerSpeed}</p>
+        <div className="controls flex flex-col items-center space-y-2">
+            <div className="controls-row flex space-x-2">
+                <button className="control-button p-2 bg-gray-700 text-white" onClick={() => handleMove('up')}>&uarr;</button>
+            </div>
+            <div className="controls-row flex space-x-2">
+                <button className="control-button p-2 bg-gray-700 text-white"onClick={() => handleMove('left')}>&larr;</button>
+                <button className="control-button p-2 bg-gray-700 text-white"onClick={() => handleMove('down')}>&darr;</button>
+                <button className="control-button p-2 bg-gray-700 text-white"onClick={() => handleMove('right')}>&rarr;</button>
+            </div>
         </div>
-      </div>
-
-      {/* Movement buttons section (in the middle) */}
-      <div className="movement-buttons-section">
-        <button className='move-button btn' onClick={() => handleMove('up')}>&uarr;</button>
-        <button className='move-button btn' onClick={() => handleMove('left')}>&larr;</button>
-        <button className='move-button btn' onClick={() => handleMove('down')}>&darr;</button>
-        <button className='move-button btn' onClick={() => handleMove('right')}>&rarr;</button>
-      </div>
-
-      {/* Reset and zoom buttons section (on the right) */}
-      <div className="reset-zoom-section">
-        {/* Button to reset the current player's turn */}
-        <button className='reset-button btn' onClick={handleResetTurn}>Reset Turn</button>
-
-        {/* Handle Zoom In and Out */}
-        <button className='zoom-button btn' onClick={onZoomIn}>+</button>
-        <button className='zoom-button btn' onClick={onZoomOut}>-</button>
-      </div>
-      <div className="player-info-section">
-        <div className="player-info">
-          <p><small>Speed: {currentPlayerStats.speed}</small></p>
-          <p><small>Might: {currentPlayerStats.might}</small></p>
-          <p><small>Sanity: {currentPlayerStats.sanity}</small></p>
-          <p><small>Knowledge: {currentPlayerStats.knowledge}</small></p>
+        <div className="controls flex flex-col items-center space-y-2">
+          <div className="controls-row flex space-x-2">
+            <button className="action-button p-2 bg-red-600 text-white" onClick={onActionButtonClick}>Action</button>
+            
+            {/* Handle Zoom In and Out */}
+            <button className='zoom-button btn' onClick={onZoomIn}>+</button>
+            <button className='zoom-button btn' onClick={onZoomOut}>-</button>
+          </div>
+          <div className="controls-row flex space-x-2">
+            <button className="action-button p-2 bg-red-600 text-white" onClick={handleResetTurn}>Reset Turn</button>
+          </div>
         </div>
-      </div>
+        <div className="stats flex flex-col items-center">
+            <div className="stat">Speed: {currentPlayerStats.speed}</div>
+            <div className="stat">Might: {currentPlayerStats.might}</div>
+            <div className="stat">Sanity: {currentPlayerStats.sanity}</div>
+            <div className="stat">Knowledge: {currentPlayerStats.knowledge}</div>
+        </div>
     </div>
-
   );
 }
 
