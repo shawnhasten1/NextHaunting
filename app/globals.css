@@ -45,6 +45,11 @@ img{
   user-select: none; /* Non-prefixed version, currently supported by Chrome, Edge, Opera and Firefox */
 }
 
+.stat-icon{
+  width: 48px;
+  height: 48px;
+}
+
 .row{
   max-height: 200px;
   display: flex;
@@ -125,4 +130,49 @@ img{
 .btn:hover{
   background-color: #2d3748;
   border: 1px solid #2d3748;
+}
+
+.modal-holder{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  min-height: 100vh;
+  min-width: 100vw;
+  position: absolute;
+  top: 0px;
+  left: 0px;
+}
+
+.modal{
+  padding:1rem;
+  padding-left:2.25rem;
+  padding-right:2.25rem;
+  position:absolute;
+  top: -400px;
+  animation: slideUp .6s;
+}
+
+.modal.active{
+  top: 40%;
+  animation: slideDown .6s;
+}
+
+.modal-content svg{
+  text-align: center;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+@keyframes slideUp {
+  0%   {top: 40%;}
+  20%  {top: 50%;}
+  100% {top: -400px;}
+}
+
+@keyframes slideDown {
+  0%   {top: -400px;}
+  70%  {top: 50%;}
+  90%  {top: 40%;}
+  100% {top: 40%;}
 }

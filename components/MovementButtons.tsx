@@ -12,7 +12,7 @@ function MovementButtons({ onMove, currentPlayerName, currentPlayerStats, curren
   };
 
   return (    
-    <div className="flex justify-between items-center p-4 bg-gray-900 absolute bottom-0 w-full">
+    <div className="flex justify-between items-center p-4 bg-gray-900 absolute bottom-0 w-full z-50">
         <div className="profile">
             <div className="w-16 h-16 border-2 border-white rounded-full"></div>
             <div className="player-info">

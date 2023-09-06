@@ -6,6 +6,7 @@ import Player from "./Player";
 import MovementButtons from "./MovementButtons";
 
 import { templateAvailableTiles, FLOORS } from '@/public/tiles';
+import Modal from "./Modal";
 
 function GameBoard() {
 
@@ -59,6 +60,13 @@ function GameBoard() {
 
   // Create a state that tracks which player you are
   const [currentPlayerIndex, setCurrentPlayerIndex] = useState(0);
+
+  // create a state that tracks the modal state
+  const [modalState, setModalState] = useState({
+    isOpen: false,
+    stat: null,
+    mod: null,
+  });
 
   // Function to generate the initial tiles for a specific floor
   function generateInitialTiles(floor) {
@@ -362,6 +370,12 @@ function GameBoard() {
                 handleSpecialMove(lastTile);
               }
               
+              if (drawnTile.special.status !== undefined) {
+                if (drawnTile.special.status === "end") {
+                  console.log("Ended Turn on Special Tile");
+                  handleSpecialMove(nextTile);
+                }
+              }              
             }
             try {
               if (drawnTile.special.transitionFloor !== undefined) {
@@ -549,6 +563,22 @@ function GameBoard() {
         player.id === currentPlayerObj.id ? currentPlayerObj : player
       )
     );
+
+    // set modal properties active to true
+    setModalState({
+      isOpen: true,
+      stat: stat,
+      mod: mod,
+    });
+
+    // after 3 seconds, set modal to inactive
+    setTimeout(() => {
+      setModalState({
+        isOpen: false,
+        stat: stat,
+        mod: mod,
+      });
+    }, 6000);
   };
 
   // Function that stores the last tile the player was on
@@ -644,6 +674,7 @@ function GameBoard() {
         overflow: "hidden", // Hide overflow to prevent scrolling
         position: "relative", // Needed for child positioning
       }}
+      className="game"
     >
       <div
         className="game-board"
@@ -696,6 +727,7 @@ function GameBoard() {
         onZoomOut={handleZoomOut}
         onActionButtonClick={handleActionButtonClick}
       />
+      <Modal isOpen={modalState.isOpen} stat={modalState.stat} mod={modalState.mod} />
     </div>
   );
 }
